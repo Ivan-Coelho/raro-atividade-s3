@@ -1,15 +1,12 @@
 import { faker } from '@faker-js/faker';
 
 
-//let email = faker.internet.email()
+
 let usuario2 = faker.internet.userName()
 let emailAdmin = faker.internet.email()
-// let emailComum = faker.internet.email()
 let emailNaoLogado = faker.internet.email()
 let tokenAdmin
-// let tokenComum
 let idUserAdmin
-// let idUserComum
 let idUserNaoLogado
 
 

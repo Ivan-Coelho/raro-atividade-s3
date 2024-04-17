@@ -6,17 +6,17 @@ let idUserAdmin
 let tokenAdmin
 let idFilme
 
-describe('Teste de criação de usuários', function () {
+describe('Teste de listagem e busca de filmes', function () {
     beforeEach(function () { //usuário admin
         cy.request('POST', 'https://raromdb-3c39614e42d4.herokuapp.com/api/users', {//cria usuário
             "name": usuario2,
             "email": emailAdmin,
             "password": "123456"
-        }).then(function (response) {//.as('usuarioJaExiste') usando aliases para criar usuário (no lugar do then)
+        }).then(function (response) {
             expect(response.body.id)//.to.be.an('number')
             idUserAdmin = response.body.id
         })
-        cy.request('POST', 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login', {//fazendo login
+        cy.request('POST', 'https://raromdb-3c39614e42d4.herokuapp.com/api/auth/login', {
             'email': emailAdmin,
             'password': '123456'
         }).then(function (response) {
@@ -40,7 +40,6 @@ describe('Teste de criação de usuários', function () {
         }).then(function (response) {
             expect(response.status).to.equal(204);
         })
-
     })
 
 it('Listar filmes no site', function () {
