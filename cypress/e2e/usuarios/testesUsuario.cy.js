@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 let email = faker.internet.email()
+let usuario1 = faker.internet.userName()
 let usuario2 = faker.internet.userName()
 let emailAdmin = faker.internet.email()
 let emailComum = faker.internet.email()
@@ -92,12 +93,12 @@ describe('Teste de usuário', function () {
     })
     describe('Teste de criação de usuário', function () {
 
-        beforeEach(function () { //usuário admin
+        beforeEach(function () { 
             cy.request('POST', 'users', {//cria usuário
                 "name": usuario2,
                 "email": emailAdmin,
                 "password": "123456"
-            }).then(function (response) {//.as('usuarioJaExiste') usando aliases para criar usuário (no lugar do then)
+            }).then(function (response) {
                 expect(response.body.id)//.to.be.an('number')
                 idUserAdmin = response.body.id
             })
@@ -115,20 +116,20 @@ describe('Teste de usuário', function () {
                 //     expect(admin.status).to.equal(204)
                 // })
             })//usuário comum
-            cy.request('POST', 'users', {//cria usuário
-                "name": usuario2,
+            cy.request('POST', 'users', {
+                "name": usuario1,
                 "email": emailComum,
                 "password": "123456"
             }).then(function (response) {
                 expect(response.body.id)//.to.be.an('number')
                 idUserComum = response.body.id
             })
-            cy.request('POST', 'auth/login', {//fazendo login
+            cy.request('POST', 'auth/login', {
                 'email': emailComum,
                 'password': '123456'
             }).then(function (logUsuario) {
                 expect(logUsuario.body.accessToken)//.to.be.an('string')
-                tokenComum = logUsuario.body.accessToken//armazenando o token
+                tokenComum = logUsuario.body.accessToken
             })
         })
         afterEach(function () {
@@ -149,8 +150,8 @@ describe('Teste de usuário', function () {
                 expect(response.status).to.equal(204);
             })
         })
-
-        it('Cadastrar um novo usuário', function () {
+        
+        it('Cadastrar um novo usuáriocom senha de 06 digitos', function () {
             cy.request('POST', 'users', {
                 "name": "Ivan Coelho",
                 "email": email,
@@ -159,6 +160,33 @@ describe('Teste de usuário', function () {
                 expect(response.status).to.equal(201)
                 expect(response.body).to.be.an('object')
                 expect(response.body.id).to.be.an('number')
+                expect(response.body).to.have.property('id')
+                expect(response.body.name).to.equal('Ivan Coelho')
+                expect(response.body.email).to.equal(email)
+                id = response.body.id
+                cy.log(id)
+
+                cy.request({
+                    method: 'DELETE',
+                    url: 'users/' + id,
+                    headers: { Authorization: 'Bearer ' + tokenAdmin }
+                }).then(function (response) {
+                    expect(response.status).to.equal(204);
+                })
+            })
+        })
+        it('Cadastrar um novo usuário com senha de 12 digitos', function () {
+            cy.request('POST', 'users', {
+                "name": "Ivan Coelho",
+                "email": email,
+                "password": "123456789abc"
+            }).then(function (response) {
+                expect(response.status).to.equal(201)
+                expect(response.body).to.be.an('object')
+                expect(response.body.id).to.be.an('number')
+                expect(response.body).to.have.property('id')
+                expect(response.body.name).to.equal('Ivan Coelho')
+                expect(response.body.email).to.equal(email)
                 id = response.body.id
                 cy.log(id)
 
@@ -199,8 +227,42 @@ describe('Teste de usuário', function () {
             }).then(function (response) {
                 expect(response.status).to.equal(200);
                 expect(response.body).to.be.an('object');
-                expect(response.body.name).to.be.an('string')
+                expect(response.body.name).to.be.an('string');
                 expect(response.body.id).to.equal(idUserAdmin);
+                expect(response.body.name).to.equal(usuario2)
+                expect(response.body.email).to.equal(emailAdmin)
+
+            })
+        })
+        it("Usuário comum consultar seus dados", function () {
+            cy.request({
+                method: "GET",
+                url: "users/" + idUserComum,
+                id: idUserComum,
+                headers: { Authorization: 'Bearer ' + tokenComum }
+            }).then(function (response) {
+                expect(response.status).to.equal(200);
+                expect(response.body).to.be.an('object');
+                expect(response.body.name).to.be.an('string');
+                expect(response.body.id).to.equal(idUserComum);
+                expect(response.body.name).to.equal(usuario1)
+                expect(response.body.email).to.equal(emailComum)
+
+            })
+        })
+        it("Admin Consultar um usuário por ID", function () {
+            cy.request({
+                method: "GET",
+                url: "users/" + idUserComum,
+                id: idUserComum,
+                headers: { Authorization: 'Bearer ' + tokenAdmin }
+            }).then(function (response) {
+                expect(response.status).to.equal(200);
+                expect(response.body).to.be.an('object');
+                expect(response.body.name).to.be.an('string')
+                expect(response.body.id).to.equal(idUserComum);
+                expect(response.body.name).to.equal(usuario1)
+                expect(response.body.email).to.equal(emailComum)
 
             })
         })

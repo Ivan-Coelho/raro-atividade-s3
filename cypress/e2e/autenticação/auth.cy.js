@@ -50,30 +50,30 @@ describe('Teste de autenticação de usuário', function () {
 
     })
     describe("Testes de login",function(){
-        beforeEach(function () { //usuário admin
-            cy.request('POST', 'users', {//cria usuário
+        beforeEach(function () { 
+            cy.request('POST', 'users', {
                 "name": usuario2,
                 "email": emailAdmin,
                 "password": "123456"
-            }).then(function (response) {//.as('usuarioJaExiste') usando aliases para criar usuário (no lugar do then)
+            }).then(function (response) {
                 expect(response.body.id)//.to.be.an('number')
                 idUserAdmin = response.body.id
             })
-            cy.request('POST', 'auth/login', {//fazendo login
+            cy.request('POST', 'auth/login', {
                 'email': emailAdmin,
                 'password': '123456'
             }).then(function (response) {
                 expect(response.body.accessToken)//.to.be.an('string')
-                tokenAdmin = response.body.accessToken//armazenando o token
+                tokenAdmin = response.body.accessToken
                 cy.request({
                     method: 'PATCH',
-                    url: "users/admin", // tornando admin
-                    headers: { Authorization: 'Bearer ' + tokenAdmin }//utilizando o token
+                    url: "users/admin",
+                    headers: { Authorization: 'Bearer ' + tokenAdmin }
                 })//.then(function (admin) {
                 //     expect(admin.status).to.equal(204)
                 // })
             })
-            cy.request('POST', 'users', {//cria usuário
+            cy.request('POST', 'users', {
                 "name": usuario2,
                 "email": emailNaoLogado,
                 "password": "123456"
@@ -134,8 +134,6 @@ describe('Teste de autenticação de usuário', function () {
             })
         })
 
-
-    })
-    
+    })   
     
 })

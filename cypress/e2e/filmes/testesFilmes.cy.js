@@ -61,8 +61,7 @@ describe('testes de filme', function () {
                 expect(response.status).to.equal(204);
             })
         })
-
-
+        
         it('Buscar um filme pelo nome', function () {
             cy.request({
                 method: 'POST',
@@ -76,10 +75,20 @@ describe('testes de filme', function () {
             cy.request({
                 method: 'GET',
                 url: 'movies/search',
-                qs: { title: 'O rei Leão' }
+                qs: { title: 'Aladin' }
             }).then(function (response) {
                 expect(response.status).to.equal(200)
                 expect(response.body).to.be.an('array').that.is.not.empty
+                expect(response.body[0].id)
+                idFilme = response.body[0].id
+
+                cy.request({
+                    method: 'DELETE',
+                    url: 'movies/' + idFilme,
+                    headers: { Authorization: 'Bearer ' + tokenAdmin }
+                }).then(function (response) {
+                    expect(response.status).to.equal(204);
+                })
             })
         })
             
@@ -93,22 +102,26 @@ describe('testes de filme', function () {
             cy.request({
                 method: 'GET',
                 url: 'movies/search',
-                qs: { title: 'O rei Leão' }
+                qs: { title: 'Aladin' }
             }).then(function (response) {
-                //expect(response.status)
-                //if (response.body.lenght > 0) {
-                    return idFilme = response.body.id;                    
-                    
-                //}
-            })
-            cy.request({
-                method: 'GET',
-                url: 'movies/' + idFilme,
-
-            }).then(function (response) {
-                expect(response.status).to.equal(201)
-                expect(response.body).to.be.an('object').that.is.not.empty
-            })
+                expect(response.body[0].id)
+                idFilme = response.body[0].id
+                cy.request({
+                    method: 'GET',
+                    url: 'movies/' + idFilme,
+    
+                }).then(function (response) {
+                    expect(response.status).to.equal(200)
+                    expect(response.body).to.be.an('object').that.is.not.empty
+                    cy.request({
+                        method: 'DELETE',
+                        url: 'movies/' + idFilme,
+                        headers: { Authorization: 'Bearer ' + tokenAdmin }
+                    }).then(function (response) {
+                        expect(response.status).to.equal(204);
+                    })
+                })
+            })           
 
         })
 
