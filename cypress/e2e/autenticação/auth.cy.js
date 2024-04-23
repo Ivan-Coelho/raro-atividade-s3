@@ -1,11 +1,11 @@
 import { faker } from '@faker-js/faker';
 
-let usuario2 = faker.internet.userName()
-let emailAdmin = faker.internet.email()
+
 let emailNaoLogado = faker.internet.email()
 let tokenAdmin
-let idUserAdmin
-let idUserNaoLogado
+let userAdmin
+let userAdmin3
+let userComum
 
 
 describe('Teste de autenticação de usuário', function () {
@@ -51,53 +51,33 @@ describe('Teste de autenticação de usuário', function () {
     })
     describe("Testes de login",function(){
         beforeEach(function () { 
-            cy.request('POST', 'users', {
-                "name": usuario2,
-                "email": emailAdmin,
-                "password": "123456"
-            }).then(function (response) {
-                expect(response.body.id)//.to.be.an('number')
-                idUserAdmin = response.body.id
-            })
-            cy.request('POST', 'auth/login', {
-                'email': emailAdmin,
-                'password': '123456'
-            }).then(function (response) {
-                expect(response.body.accessToken)//.to.be.an('string')
-                tokenAdmin = response.body.accessToken
-                cy.request({
-                    method: 'PATCH',
-                    url: "users/admin",
-                    headers: { Authorization: 'Bearer ' + tokenAdmin }
-                })//.then(function (admin) {
-                //     expect(admin.status).to.equal(204)
-                // })
-            })
-            cy.request('POST', 'users', {
-                "name": usuario2,
-                "email": emailNaoLogado,
-                "password": "123456"
-            }).then(function (response) {
-                expect(response.body.id)//.to.be.an('number')
-                idUserNaoLogado = response.body.id
-            })
+            
+            cy.criarUsuarioAdmin().then(function (dadosAdmin) {
+                userAdmin = dadosAdmin
+                cy.log(userAdmin.id)
+
+                cy.authUsuarioAdmin().then(function (dadosAdmin) {
+                    tokenAdmin = dadosAdmin
+                    cy.log(tokenAdmin)                     
+                
+                    cy.authUsuarioAdmin2().then(function(dadosAdmin){
+                        userAdmin3 = dadosAdmin 
+                        cy.log (userAdmin3)
+                    });
+            });
+        });  
+
+        cy.criarUsuarioComum().then(function (dadosComum) {
+            userComum = dadosComum
+            cy.log(userComum.id)           
+        })
         })
     
         afterEach(function () {
-            cy.request({
-                method: 'DELETE',
-                url: 'users/' + idUserNaoLogado,
-                headers: { Authorization: 'Bearer ' + tokenAdmin }
-            }).then(function (response) {
-                expect(response.status).to.equal(204);
-            })
-            cy.request({
-                method: 'DELETE',
-                url: 'users/' + idUserAdmin,
-                headers: { Authorization: 'Bearer ' + tokenAdmin }
-            }).then(function (response) {
-                expect(response.status).to.equal(204);
-            })
+
+            cy.deletarUsuario(userComum.id, tokenAdmin)
+            cy.deletarUsuario(userAdmin.id, tokenAdmin) 
+            
         })
     
         it('Fazer login', function () {
@@ -105,7 +85,7 @@ describe('Teste de autenticação de usuário', function () {
                 method: 'POST',
                 url: 'auth/login',
                 body: {
-                    'email': emailNaoLogado,
+                    'email': userComum.email,
                     'password': '123456'
                 }
             }).then(function (response) {
