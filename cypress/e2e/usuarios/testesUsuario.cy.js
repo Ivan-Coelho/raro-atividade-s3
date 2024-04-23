@@ -575,6 +575,15 @@ describe('Teste de criação de review', function () {
             })
         })
         after(function () {
+           
+            cy.request({
+                method: 'DELETE',
+                url: 'movies/' + idFilmes,
+                headers: { Authorization: 'Bearer ' + tokenAdmin }
+            }).then(function (response) {
+                expect(response.status).to.equal(204);
+            })
+
             cy.deletarUsuario(userAdmin.id, tokenAdmin)
         })
 

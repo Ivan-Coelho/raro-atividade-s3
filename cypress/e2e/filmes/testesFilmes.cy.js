@@ -91,7 +91,7 @@ describe('testes de filme', function () {
         it('Buscar por um filme pelo ID', function () {
 
             cy.log(tokenAdmin)
-            cy.cadastrarFilme(tokenAdmin)
+           // cy.cadastrarFilme(tokenAdmin)
             cy.cadastrarFilme(tokenAdmin).then(function (response) {
                 expect(response.status).to.equal(201)
             })
