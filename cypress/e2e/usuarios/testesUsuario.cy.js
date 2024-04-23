@@ -136,7 +136,7 @@ describe('Teste de usuário', function () {
 
 
     })
-    describe.only('Teste de criação de usuário', function () {
+    describe('Teste de criação de usuário', function () {
 
         before(function () {
 
@@ -334,10 +334,11 @@ describe('Teste de usuário', function () {
             }).then(function (response) {
                 expect(response.status).to.equal(200);
                 expect(response.body).to.be.an('array').that.is.not.empty;
-                // response.body.forEach(user => {
-                //     expect(user).to.have.property('id').that.is.a('number');
-                //     expect(user).to.have.property('name').that.is.a('string').and.not.empty;
-                //     expect(user).to.have.property('email').that.is.a('string').and.not.empty;
+                response.body.forEach(user => {
+                    expect(user).to.have.property('id').that.is.a('number');
+                    expect(user).to.have.property('name').that.is.a('string').and.not.empty;
+                    expect(user).to.have.property('email').that.is.a('string').and.not.empty;
+                })
             })
 
         })
@@ -537,7 +538,7 @@ describe('Teste de criação de review', function () {
 
     })
 
-    describe.only('Teste de criação de uma review valida', function () {
+    describe('Teste de criação de uma review valida', function () {
 
         let idFilmes
         before(function () {

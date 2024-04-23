@@ -18,26 +18,26 @@ before(function () {
 
 describe('testes de filme', function () {
 
-    // describe('Listar filmes', function () {
-    //     it('Listar filmes no site', function () {
-    //         cy.request({
-    //             method: 'GET',
-    //             url: 'movies'
-    //         }).then(function (response) {
-    //             expect(response.status).to.equal(200)
-    //             expect(response.body).to.be.an('array').that.is.not.empty;
-    //             response.body.forEach(movies => {
-    //                 expect(movies).to.have.property('id').that.is.a('number');
-    //                 expect(movies).to.have.property('title').that.is.a('string').and.not.empty;
-    //                 expect(movies).to.have.property('genre').that.is.a('string').and.not.empty;
-    //                 expect(movies).to.have.property('description').that.is.a('string').and.not.empty;;
-    //                 expect(movies).to.have.property('totalRating')
-    //                 expect(movies).to.have.property('durationInMinutes').that.is.a('number');
-    //                 expect(movies).to.have.property('releaseYear').that.is.a('number');
-    //             })
-    //         })
-    //     })
-    // })
+    describe('Listar filmes', function () {
+        it('Listar filmes no site', function () {
+            cy.request({
+                method: 'GET',
+                url: 'movies'
+            }).then(function (response) {
+                expect(response.status).to.equal(200)
+                expect(response.body).to.be.an('array').that.is.not.empty;
+                response.body.forEach(movies => {
+                    expect(movies).to.have.property('id').that.is.a('number');
+                    expect(movies).to.have.property('title').that.is.a('string').and.not.empty;
+                    expect(movies).to.have.property('genre').that.is.a('string').and.not.empty;
+                    expect(movies).to.have.property('description').that.is.a('string').and.not.empty;;
+                    expect(movies).to.have.property('totalRating')
+                    expect(movies).to.have.property('durationInMinutes').that.is.a('number');
+                    expect(movies).to.have.property('releaseYear').that.is.a('number');
+                })
+            })
+        })
+    })
 
     describe('Teste de busca de filmes', function () {
 
